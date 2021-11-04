@@ -43,11 +43,11 @@ class YottaDBKernel(Kernel):
             code = code.replace('"', '""')
             code = code.replace('\n', '"_$C(10)_"')
             self.c.send(
-                'zlink "JUPYTER" w ">>>>>>>>>>" d DOEXECUTE^JUPYTER("' +
+                'zlink "JUPYTER" d DOEXECUTE^JUPYTER("' +
                 code + '")\n'
             )
+            self.c.expect("<<<<<<<<<<")
             self.c.expect(">>>>>>>>>>")
-            self.c.expect("NODEVISTA>")
             stream_content = {'name': 'stdout', 'text': self.c.before}
             self.send_response(self.iopub_socket, 'stream', stream_content)
 
@@ -66,8 +66,8 @@ class YottaDBKernel(Kernel):
             code + '",' + str(cursor_pos) + ') w "<<<<<<<<<<"\n'
         )
         self.c.send(txt)
-        self.c.expect(">>>>>>>>>>")
         self.c.expect("<<<<<<<<<<")
+        self.c.expect(">>>>>>>>>>")
         x = self.c.before
         with open("/tmp/dummy", "w") as f:
             f.write(str(x))
