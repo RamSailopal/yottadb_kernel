@@ -23,7 +23,7 @@ class YottaDBKernel(Kernel):
 
     def __init__(self, **kwargs):
         Kernel.__init__(self, **kwargs)
-        cmd="ydb <<< 's $zro="/tmp/ "_$zro'"
+        cmd="ydb <<< 's $zro=\"/tmp/ \"_$zro'"
         process = subprocess.Popen(cmd,
                               stdout=subprocess.PIPE,
                               stderr=subprocess.PIPE,
@@ -42,7 +42,7 @@ class YottaDBKernel(Kernel):
             )
 
         if not silent:
-            code = code.replace('"', '""')
+            code = code.replace('"', '\"')
             code = code.replace('\n', '"_$C(10)_"')  
             cmd="ydb <<< '" + code + "' | awk '/^NODEVISTA>/ { next } { print } '"
             process = subprocess.Popen(cmd,
@@ -62,7 +62,7 @@ class YottaDBKernel(Kernel):
         }
 
     def do_complete(self, code, cursor_pos):
-        code = code.replace('"', '""')
+        code = code.replace('"', '\"')
         code = code.replace('\n', '"_$C(10)_"')
         cmd="ydb <<< '" + code + "' | awk '/^NODEVISTA>/ { next } { print } '"
         process = subprocess.Popen(cmd,
