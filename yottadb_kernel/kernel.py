@@ -62,8 +62,8 @@ class YottaDBKernel(Kernel):
         code = code.replace('"', '""')
         code = code.replace('\n', '"_$C(10)_"')
         txt = (
-            'zlink "JUPYTER" w ">>>>>>>>>>" d DOCOMPLETE^JUPYTER("' +
-            code + '",' + str(cursor_pos) + ') w "<<<<<<<<<<"\n'
+            'zlink "JUPYTER" d DOCOMPLETE^JUPYTER("' +
+            code + '",' + str(cursor_pos) + '\n'
         )
         self.c.send(txt)
         self.c.expect("<<<<<<<<<<")
