@@ -3,7 +3,7 @@
 # Winfried Bantel, Aalen University
 
 from ipykernel.kernelbase import Kernel
-import pexpect
+import subprocess
 import os
 import json
 
@@ -27,6 +27,12 @@ class YottaDBKernel(Kernel):
         self.c.expect("NODEVISTA>")
         self.c.send('s $zro="/tmp/ "_$zro\n')
         self.c.expect("NODEVISTA>")
+        cmd="ydb <<< 's $zro="/tmp/ "_$zro'"
+        process = subprocess.Popen(cmd,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE,
+                              shell=True)
+        result = process.communicate()
 
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
@@ -41,14 +47,15 @@ class YottaDBKernel(Kernel):
 
         if not silent:
             code = code.replace('"', '""')
-            code = code.replace('\n', '"_$C(10)_"')
-            self.c.send(
-                'zlink "JUPYTER" d DOEXECUTE^JUPYTER("' +
-                code + '")\n'
-            )
-            self.c.expect("<<<<<<<<<<")
-            self.c.expect(">>>>>>>>>>")
-            stream_content = {'name': 'stdout', 'text': self.c.before}
+            code = code.replace('\n', '"_$C(10)_"')  
+            cmd="ydb <<< '" + code + "' | awk '/^NODEVISTA>/ { next } { print } '"
+            process = subprocess.Popen(cmd,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE,
+                              shell=True)
+            result = process.communicate()
+            result1=result[0].replace("\n","")
+            stream_content = {'name': 'stdout', 'text': result1}
             self.send_response(self.iopub_socket, 'stream', stream_content)
 
         return {
@@ -61,14 +68,14 @@ class YottaDBKernel(Kernel):
     def do_complete(self, code, cursor_pos):
         code = code.replace('"', '""')
         code = code.replace('\n', '"_$C(10)_"')
-        txt = (
-            'zlink "JUPYTER" d DOCOMPLETE^JUPYTER("' +
-            code + '",' + str(cursor_pos) + '\n'
-        )
-        self.c.send(txt)
-        self.c.expect("<<<<<<<<<<")
-        self.c.expect(">>>>>>>>>>")
-        x = self.c.before
+        cmd="ydb <<< '" + code + "' | awk '/^NODEVISTA>/ { next } { print } '"
+        process = subprocess.Popen(cmd,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE,
+                              shell=True)
+        result = process.communicate()
+        result1=result[0].replace("\n","")
+        x = result1
         with open("/tmp/dummy", "w") as f:
             f.write(str(x))
         y = json.loads(x)
