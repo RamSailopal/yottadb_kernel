@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a kernel for the M-Language in YottaDB
+This is forked version of a kernel for the M-Language in YottaDB tailored to run with VistA
 
 https://yottadb.com/
 
@@ -38,8 +38,4 @@ YottaDB notebook.
 **Console frontends**: To use it with the console frontends, add
 `--kernel yottadb` to their command line arguments.
 
-## License
-Published under MIT-license
 
-## Author
-Winfried Bantel, Aalen University
