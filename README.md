@@ -50,6 +50,6 @@ To run with persistent storage, create a directory i.e. /opt/jupyterdir and then
 
     docker run -d -p 8888:8888 -v /opt/jupyterdir:/home/jupyter ramb0/vistajupyter
     
-Then navigate to the Jupyter browser on http://ip address of docker server:8888
+Then navigate to the Jupyter browser on http://ip-address-of-docker-server:8888
   
 Enter the password **test**
