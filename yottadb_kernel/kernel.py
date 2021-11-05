@@ -44,7 +44,7 @@ class YottaDBKernel(Kernel):
 
         if not silent:
             code = code.replace('"', '\"')
-            code = code.replace('\n', '"_$C(10)_"')  
+            code = code.replace('\n', ' ')  
             cmd="ydb <<< '" + code + "' | awk '/^NODEVISTA>/ { next } { print } '"
             process = subprocess.Popen(cmd,
                               stdout=subprocess.PIPE,
@@ -53,7 +53,6 @@ class YottaDBKernel(Kernel):
             result = process.communicate()
             results1=result[0]
             results1=results1.decode()
-            results1=results1.replace("\n","")
             stream_content = {'name': 'stdout', 'text': results1}
             self.send_response(self.iopub_socket, 'stream', stream_content)
 
@@ -66,7 +65,7 @@ class YottaDBKernel(Kernel):
 
     def do_complete(self, code, cursor_pos):
         code = code.replace('"', '\"')
-        code = code.replace('\n', '"_$C(10)_"')
+        code = code.replace('\n', ' ')
         cmd="ydb <<< '" + code + "' | awk '/^NODEVISTA>/ { next } { print } '"
         process = subprocess.Popen(cmd,
                               stdout=subprocess.PIPE,
@@ -75,7 +74,6 @@ class YottaDBKernel(Kernel):
         result = process.communicate()
         results1=result[0]
         results1=results1.decode()
-        results1=results1.replace("\n","")
         x = results1
         with open("/tmp/dummy", "w") as f:
             f.write(str(x))
