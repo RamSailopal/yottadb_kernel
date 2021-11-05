@@ -38,4 +38,18 @@ YottaDB notebook.
 **Console frontends**: To use it with the console frontends, add
 `--kernel yottadb` to their command line arguments.
 
+## Docker Container
 
+A docker container of VistA integrated with Jupyter is available. 
+
+To run:
+
+    docker run -d -p 8888:8888 ramb0/vistajupyter
+  
+To run with persistent storage, create a directory i.e. /opt/jupyterdir and then:
+
+    docker run -d -p 8888:8888 -v /opt/jupyterdir:/home/jupyter ramb0/vistajupyter
+    
+Then naviagate to the Jupyter browser on http://<ip address of docker server>:8888
+  
+Enter the password **test**
