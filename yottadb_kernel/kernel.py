@@ -53,7 +53,7 @@ class YottaDBKernel(Kernel):
             results1=result[0]
             results1=results1.decode()
             results1=results1.replace("\n","")
-            stream_content = {'name': 'stdout', 'text': result1}
+            stream_content = {'name': 'stdout', 'text': results1}
             self.send_response(self.iopub_socket, 'stream', stream_content)
 
         return {
@@ -75,7 +75,7 @@ class YottaDBKernel(Kernel):
         results1=result[0]
         results1=results1.decode()
         results1=results1.replace("\n","")
-        x = result1
+        x = results1
         with open("/tmp/dummy", "w") as f:
             f.write(str(x))
         y = json.loads(x)
