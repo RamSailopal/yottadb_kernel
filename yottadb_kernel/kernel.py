@@ -1,6 +1,7 @@
 # YottaDB-kernel for jupyter notebook
 # published under MIT-License by
 # Winfried Bantel, Aalen University
+# Raman Sailopal - Forked version tailored for VistA. Removes the need for using JUPYTER routine to run code.
 
 from ipykernel.kernelbase import Kernel
 import subprocess
