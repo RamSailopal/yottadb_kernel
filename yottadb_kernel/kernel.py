@@ -50,7 +50,9 @@ class YottaDBKernel(Kernel):
                               stderr=subprocess.PIPE,
                               shell=True)
             result = process.communicate()
-            result1=result[0].replace("\n","")
+            results1=result[0]
+            results1=results1.decode()
+            results1=results1.replace("\n","")
             stream_content = {'name': 'stdout', 'text': result1}
             self.send_response(self.iopub_socket, 'stream', stream_content)
 
@@ -70,7 +72,9 @@ class YottaDBKernel(Kernel):
                               stderr=subprocess.PIPE,
                               shell=True)
         result = process.communicate()
-        result1=result[0].replace("\n","")
+        results1=result[0]
+        results1=results1.decode()
+        results1=results1.replace("\n","")
         x = result1
         with open("/tmp/dummy", "w") as f:
             f.write(str(x))
