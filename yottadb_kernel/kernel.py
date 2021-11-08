@@ -44,7 +44,7 @@ class YottaDBKernel(Kernel):
             code = code.replace('\n', ' ')  
             self.c.send(code + '\n')
             self.c.expect("NODEVISTA>")
-            stream_content = {'name': 'stdout', 'text': self.c.before}
+            stream_content = {'name': 'stdout', 'text': self.c.before.decode()}
             self.send_response(self.iopub_socket, 'stream', stream_content)
 
         return {
