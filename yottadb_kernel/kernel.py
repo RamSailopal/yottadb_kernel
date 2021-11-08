@@ -24,9 +24,9 @@ class YottaDBKernel(Kernel):
     def __init__(self, **kwargs):
         Kernel.__init__(self, **kwargs)
         self.c = pexpect.spawn(os.environ['ydb_dist'] + "/ydb")
-        self.c.expect("YDB>")
+        self.c.expect("NODEVISTA>")
         self.c.send('s $zro="/tmp/ "_$zro\n')
-        self.c.expect("YDB>")
+        self.c.expect("NODEVISTA>")
 
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
