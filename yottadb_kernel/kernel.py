@@ -6,7 +6,6 @@
 from ipykernel.kernelbase import Kernel
 import subprocess
 import os
-import json
 
 
 class YottaDBKernel(Kernel):
@@ -24,12 +23,10 @@ class YottaDBKernel(Kernel):
 
     def __init__(self, **kwargs):
         Kernel.__init__(self, **kwargs)
-        cmd="ydb <<< 's $zro=\"/tmp/ \"_$zro'"
-        process = subprocess.Popen(cmd,
-                              stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE,
-                              shell=True)
-        result = process.communicate()
+        self.c = pexpect.spawn(os.environ['ydb_dist'] + "/ydb")
+        self.c.expect("YDB>")
+        self.c.send('s $zro="/tmp/ "_$zro\n')
+        self.c.expect("YDB>")
 
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
@@ -45,15 +42,9 @@ class YottaDBKernel(Kernel):
         if not silent:
             code = code.replace('"', '\"')
             code = code.replace('\n', ' ')  
-            cmd="ydb <<< '" + code + "' | awk '/^NODEVISTA>/ { next } { print } '"
-            process = subprocess.Popen(cmd,
-                              stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE,
-                              shell=True)
-            result = process.communicate()
-            results1=result[0]
-            results1=results1.decode()
-            stream_content = {'name': 'stdout', 'text': results1}
+            self.c.send(code + '\n')
+            self.c.expect("NODEVISTA>")
+            stream_content = {'name': 'stdout', 'text': self.c.before}
             self.send_response(self.iopub_socket, 'stream', stream_content)
 
         return {
@@ -62,23 +53,6 @@ class YottaDBKernel(Kernel):
             'payload': [],
             'user_expressions': {},
         }
-
-    def do_complete(self, code, cursor_pos):
-        code = code.replace('"', '\"')
-        code = code.replace('\n', ' ')
-        cmd="ydb <<< '" + code + "' | awk '/^NODEVISTA>/ { next } { print } '"
-        process = subprocess.Popen(cmd,
-                              stdout=subprocess.PIPE,
-                              stderr=subprocess.PIPE,
-                              shell=True)
-        result = process.communicate()
-        results1=result[0]
-        results1=results1.decode()
-        x = results1
-        with open("/tmp/dummy", "w") as f:
-            f.write(str(x))
-        y = json.loads(x)
-        return y
 
 
 if __name__ == '__main__':
