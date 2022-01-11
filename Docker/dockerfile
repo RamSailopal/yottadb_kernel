@@ -1,0 +1,15 @@
+FROM docker.io/vistadataproject/nodevista999
+RUN ln -s /home/nodevista/lib/gtm/gtm /usr/local/bin/ydb
+RUN yum makecache
+RUN yum install -y epel-release
+RUN yum install -y git
+RUN yum install -y python36
+RUN python3.6 -m pip install jupyterlab notebook
+WORKDIR /usr/local
+RUN git clone https://github.com/RamSailopal/yottadb_kernel.git
+WORKDIR /usr/local/yottadb_kernel/
+RUN python3.6 setup.py install
+RUN python3.6 -m yottadb_kernel.install && mkdir -p /root/.jupyter
+COPY Docker/jupyter_notebook_config.json /root/.jupyter/jupyter_notebook_config.json
+RUN mkdir /home/jupyter
+ENTRYPOINT bash -c "cd /home/jupyter && source /home/nodevista/etc/env && export ydb_dist="/usr/local/bin" && jupyter notebook --allow-root --ip 0.0.0.0 & /home/nodevista/bin/entryCombo.sh"
