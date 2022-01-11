@@ -19,7 +19,7 @@ jobs:
       - name: Build and push to Docker
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
-         image: ramb0/yottadbjupyter
+         image: ramb0/vistajupyter
          dockerfile: Docker/dockerfile
          registry: docker.io
          username: ${{ secrets.DOCKER_USERNAME }}
