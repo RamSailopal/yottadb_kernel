@@ -1,5 +1,7 @@
 # YottaDB-kernel for Jupyter Notebook
 
+![example workflow](https://github.com/RamSailopal/yottadb_kernel/actions/workflows/deploy.yml/badge.svg)
+
 ## Description
 
 This is forked version of a kernel for the M-Language in YottaDB tailored to run with VistA
